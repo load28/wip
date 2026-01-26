@@ -1,2 +1,1 @@
-// Project entity public API
-export {};
+export { ProjectCard } from './ui';
