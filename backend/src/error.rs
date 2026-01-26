@@ -8,6 +8,9 @@ pub enum AppError {
     #[error("잘못된 요청: {0}")]
     BadRequest(String),
 
+    #[error("리소스를 찾을 수 없습니다")]
+    NotFound,
+
     #[error("서버 오류: {0}")]
     Internal(String),
 
