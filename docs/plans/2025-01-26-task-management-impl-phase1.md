@@ -4,46 +4,89 @@
 
 **Goal:** 프론트엔드와 백엔드의 기본 프로젝트 구조를 설정하고, 개발 환경을 구축한다.
 
-**Architecture:** 프론트엔드는 Next.js + FSD 구조, 백엔드는 Rust + Actix-web으로 구성. 모노레포 형태로 frontend/backend 폴더 분리.
+**Architecture:** 프론트엔드(Next.js + FSD)와 백엔드(Rust + Actix-web)는 별도 프로젝트로 분리. 패키지 매니저는 bun 사용.
 
-**Tech Stack:** Next.js 14, Rust, pnpm, Cargo, ESLint, Prettier, Husky, Vitest
+**Tech Stack:** Next.js 14, Rust, bun, Cargo, ESLint, Prettier, Husky, Vitest
 
 ---
 
-## Task 1: 모노레포 루트 설정
+## Task 1: 프론트엔드 프로젝트 루트 설정
 
 **Files:**
-- Create: `package.json`
-- Create: `.gitignore`
-- Create: `.nvmrc`
+- Create: `frontend/package.json`
+- Create: `frontend/.gitignore`
+- Create: `frontend/.nvmrc`
 
-**Step 1: package.json 생성**
+**Step 1: frontend 디렉토리 생성**
+
+```bash
+mkdir -p frontend
+cd frontend
+```
+
+**Step 2: package.json 생성**
 
 ```json
 {
-  "name": "task-management-tool",
+  "name": "task-management-frontend",
+  "version": "0.1.0",
   "private": true,
-  "workspaces": [
-    "frontend"
-  ],
   "scripts": {
-    "dev": "pnpm --filter frontend dev",
-    "build": "pnpm --filter frontend build",
-    "test": "pnpm --filter frontend test",
-    "lint": "pnpm --filter frontend lint"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "test": "vitest",
+    "test:coverage": "vitest --coverage",
+    "prepare": "husky"
   },
-  "engines": {
-    "node": ">=20.0.0"
+  "dependencies": {
+    "next": "^14.2.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "@mui/material": "^5.15.0",
+    "@mui/icons-material": "^5.15.0",
+    "@mui/material-nextjs": "^5.15.0",
+    "@emotion/react": "^11.11.0",
+    "@emotion/styled": "^11.11.0",
+    "jotai": "^2.6.0",
+    "react-hook-form": "^7.49.0",
+    "@hookform/resolvers": "^3.3.0",
+    "zod": "^3.22.0",
+    "react-i18next": "^14.0.0",
+    "i18next": "^23.7.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "typescript": "^5.3.0",
+    "tailwindcss": "^3.4.0",
+    "postcss": "^8.4.0",
+    "autoprefixer": "^10.4.0",
+    "eslint": "^8.56.0",
+    "eslint-config-next": "^14.2.0",
+    "prettier": "^3.2.0",
+    "husky": "^9.0.0",
+    "lint-staged": "^15.2.0",
+    "@commitlint/cli": "^18.4.0",
+    "@commitlint/config-conventional": "^18.4.0",
+    "vitest": "^1.2.0",
+    "@vitejs/plugin-react": "^4.2.0",
+    "@testing-library/react": "^14.1.0",
+    "@testing-library/jest-dom": "^6.2.0",
+    "@testing-library/user-event": "^14.5.0",
+    "jsdom": "^23.2.0",
+    "@vitest/coverage-v8": "^1.2.0"
   }
 }
 ```
 
-**Step 2: .gitignore 생성**
+**Step 3: .gitignore 생성**
 
 ```
 # Dependencies
 node_modules/
-target/
 
 # Build
 .next/
@@ -72,90 +115,41 @@ npm-debug.log*
 # Test
 coverage/
 
-# Rust
-Cargo.lock
-*.pdb
+# Bun
+bun.lockb
 ```
 
-**Step 3: .nvmrc 생성**
+**Step 4: .nvmrc 생성**
 
 ```
 20
 ```
 
-**Step 4: 커밋**
+**Step 5: 의존성 설치**
 
 ```bash
-git add package.json .gitignore .nvmrc
-git commit -m "chore: 모노레포 루트 설정"
+cd frontend && bun install
+```
+
+**Step 6: 커밋**
+
+```bash
+cd frontend && git init
+git add package.json .gitignore .nvmrc bun.lockb
+git commit -m "chore: 프론트엔드 프로젝트 초기 설정"
 ```
 
 ---
 
-## Task 2: 프론트엔드 Next.js 프로젝트 생성
+## Task 2: TypeScript 및 Next.js 설정
 
 **Files:**
-- Create: `frontend/package.json`
 - Create: `frontend/tsconfig.json`
 - Create: `frontend/next.config.js`
 - Create: `frontend/tailwind.config.ts`
 - Create: `frontend/postcss.config.js`
 
-**Step 1: frontend 디렉토리 생성 및 package.json 생성**
-
-```bash
-mkdir -p frontend
-```
-
-```json
-{
-  "name": "frontend",
-  "version": "0.1.0",
-  "private": true,
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint",
-    "test": "vitest",
-    "test:coverage": "vitest --coverage"
-  },
-  "dependencies": {
-    "next": "^14.2.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "@mui/material": "^5.15.0",
-    "@mui/icons-material": "^5.15.0",
-    "@emotion/react": "^11.11.0",
-    "@emotion/styled": "^11.11.0",
-    "jotai": "^2.6.0",
-    "react-hook-form": "^7.49.0",
-    "@hookform/resolvers": "^3.3.0",
-    "zod": "^3.22.0",
-    "react-i18next": "^14.0.0",
-    "i18next": "^23.7.0"
-  },
-  "devDependencies": {
-    "@types/node": "^20.10.0",
-    "@types/react": "^18.2.0",
-    "@types/react-dom": "^18.2.0",
-    "typescript": "^5.3.0",
-    "tailwindcss": "^3.4.0",
-    "postcss": "^8.4.0",
-    "autoprefixer": "^10.4.0",
-    "eslint": "^8.56.0",
-    "eslint-config-next": "^14.2.0",
-    "prettier": "^3.2.0",
-    "vitest": "^1.2.0",
-    "@vitejs/plugin-react": "^4.2.0",
-    "@testing-library/react": "^14.1.0",
-    "@testing-library/jest-dom": "^6.2.0",
-    "jsdom": "^23.2.0"
-  }
-}
-```
-
-**Step 2: tsconfig.json 생성**
+**Step 1: tsconfig.json 생성**
 
 ```json
 {
@@ -186,7 +180,7 @@ mkdir -p frontend
 }
 ```
 
-**Step 3: next.config.js 생성**
+**Step 2: next.config.js 생성**
 
 ```js
 /** @type {import('next').NextConfig} */
@@ -199,7 +193,7 @@ const nextConfig = {
 module.exports = nextConfig;
 ```
 
-**Step 4: tailwind.config.ts 생성**
+**Step 3: tailwind.config.ts 생성**
 
 ```ts
 import type { Config } from 'tailwindcss';
@@ -220,7 +214,7 @@ const config: Config = {
 export default config;
 ```
 
-**Step 5: postcss.config.js 생성**
+**Step 4: postcss.config.js 생성**
 
 ```js
 module.exports = {
@@ -231,211 +225,26 @@ module.exports = {
 };
 ```
 
-**Step 6: 커밋**
+**Step 5: 커밋**
 
 ```bash
-git add frontend/
-git commit -m "chore: Next.js 프론트엔드 프로젝트 설정"
+git add tsconfig.json next.config.js tailwind.config.ts postcss.config.js
+git commit -m "chore: TypeScript, Next.js, Tailwind 설정"
 ```
 
 ---
 
-## Task 3: FSD 디렉토리 구조 생성
-
-**Files:**
-- Create: `frontend/src/app/` (FSD app layer)
-- Create: `frontend/src/pages/` (FSD pages layer)
-- Create: `frontend/src/widgets/` (FSD widgets layer)
-- Create: `frontend/src/features/` (FSD features layer)
-- Create: `frontend/src/entities/` (FSD entities layer)
-- Create: `frontend/src/shared/` (FSD shared layer)
-
-**Step 1: FSD 레이어 디렉토리 생성**
-
-```bash
-mkdir -p frontend/src/app/providers
-mkdir -p frontend/src/app/styles
-mkdir -p frontend/src/app/routes
-
-mkdir -p frontend/src/pages/home/ui
-mkdir -p frontend/src/pages/project/ui
-mkdir -p frontend/src/pages/settings/ui
-
-mkdir -p frontend/src/widgets/task-board/ui
-mkdir -p frontend/src/widgets/task-board/model
-mkdir -p frontend/src/widgets/task-list/ui
-mkdir -p frontend/src/widgets/task-calendar/ui
-mkdir -p frontend/src/widgets/sidebar/ui
-
-mkdir -p frontend/src/features/create-task/ui
-mkdir -p frontend/src/features/create-task/model
-mkdir -p frontend/src/features/auth/ui
-mkdir -p frontend/src/features/auth/model
-
-mkdir -p frontend/src/entities/task/ui
-mkdir -p frontend/src/entities/task/model
-mkdir -p frontend/src/entities/task/api
-mkdir -p frontend/src/entities/project/ui
-mkdir -p frontend/src/entities/project/model
-mkdir -p frontend/src/entities/user/ui
-mkdir -p frontend/src/entities/user/model
-
-mkdir -p frontend/src/shared/ui/skeleton
-mkdir -p frontend/src/shared/ui/button
-mkdir -p frontend/src/shared/ui/error-boundary
-mkdir -p frontend/src/shared/api
-mkdir -p frontend/src/shared/lib/i18n/locales
-mkdir -p frontend/src/shared/lib/error
-mkdir -p frontend/src/shared/lib/test-utils
-mkdir -p frontend/src/shared/store
-mkdir -p frontend/src/shared/config
-mkdir -p frontend/src/shared/types
-```
-
-**Step 2: 각 레이어 index.ts 생성 (Public API)**
-
-Create `frontend/src/shared/index.ts`:
-```ts
-export * from './ui';
-export * from './lib';
-export * from './store';
-export * from './config';
-export * from './types';
-```
-
-Create `frontend/src/shared/ui/index.ts`:
-```ts
-// UI 컴포넌트 export
-```
-
-Create `frontend/src/shared/lib/index.ts`:
-```ts
-// 유틸리티 함수 export
-```
-
-Create `frontend/src/shared/store/index.ts`:
-```ts
-// Jotai atoms export
-```
-
-Create `frontend/src/shared/config/index.ts`:
-```ts
-// 설정 export
-```
-
-Create `frontend/src/shared/types/index.ts`:
-```ts
-// 타입 export
-```
-
-Create `frontend/src/entities/index.ts`:
-```ts
-export * from './task';
-export * from './project';
-export * from './user';
-```
-
-Create `frontend/src/entities/task/index.ts`:
-```ts
-// Task entity public API
-```
-
-Create `frontend/src/entities/project/index.ts`:
-```ts
-// Project entity public API
-```
-
-Create `frontend/src/entities/user/index.ts`:
-```ts
-// User entity public API
-```
-
-Create `frontend/src/features/index.ts`:
-```ts
-export * from './create-task';
-export * from './auth';
-```
-
-Create `frontend/src/features/create-task/index.ts`:
-```ts
-// Create task feature public API
-```
-
-Create `frontend/src/features/auth/index.ts`:
-```ts
-// Auth feature public API
-```
-
-Create `frontend/src/widgets/index.ts`:
-```ts
-export * from './task-board';
-export * from './task-list';
-export * from './task-calendar';
-export * from './sidebar';
-```
-
-Create `frontend/src/widgets/task-board/index.ts`:
-```ts
-// Task board widget public API
-```
-
-Create `frontend/src/widgets/task-list/index.ts`:
-```ts
-// Task list widget public API
-```
-
-Create `frontend/src/widgets/task-calendar/index.ts`:
-```ts
-// Task calendar widget public API
-```
-
-Create `frontend/src/widgets/sidebar/index.ts`:
-```ts
-// Sidebar widget public API
-```
-
-Create `frontend/src/pages/index.ts`:
-```ts
-export * from './home';
-export * from './project';
-export * from './settings';
-```
-
-Create `frontend/src/pages/home/index.ts`:
-```ts
-// Home page public API
-```
-
-Create `frontend/src/pages/project/index.ts`:
-```ts
-// Project page public API
-```
-
-Create `frontend/src/pages/settings/index.ts`:
-```ts
-// Settings page public API
-```
-
-**Step 3: 커밋**
-
-```bash
-git add frontend/src/
-git commit -m "chore: FSD 디렉토리 구조 생성"
-```
-
----
-
-## Task 4: ESLint, Prettier, Husky 설정
+## Task 3: ESLint, Prettier, Husky, Commitlint 설정
 
 **Files:**
 - Create: `frontend/.eslintrc.json`
 - Create: `frontend/.prettierrc`
-- Create: `.husky/pre-commit`
-- Create: `.husky/commit-msg`
-- Create: `commitlint.config.js`
+- Create: `frontend/commitlint.config.js`
 - Create: `frontend/lint-staged.config.js`
+- Create: `frontend/.husky/pre-commit`
+- Create: `frontend/.husky/commit-msg`
 
-**Step 1: frontend/.eslintrc.json 생성**
+**Step 1: .eslintrc.json 생성**
 
 ```json
 {
@@ -443,13 +252,13 @@ git commit -m "chore: FSD 디렉토리 구조 생성"
 }
 ```
 
-**Step 2: frontend/.prettierrc 생성**
+**Step 2: .prettierrc 생성**
 
 ```json
 {}
 ```
 
-**Step 3: commitlint.config.js 생성 (루트)**
+**Step 3: commitlint.config.js 생성**
 
 ```js
 module.exports = {
@@ -465,7 +274,7 @@ module.exports = {
 };
 ```
 
-**Step 4: frontend/lint-staged.config.js 생성**
+**Step 4: lint-staged.config.js 생성**
 
 ```js
 module.exports = {
@@ -474,36 +283,256 @@ module.exports = {
 };
 ```
 
-**Step 5: Husky 설정 (루트에서 실행)**
+**Step 5: Husky 초기화**
 
 ```bash
-pnpm add -D -w husky @commitlint/cli @commitlint/config-conventional lint-staged
-npx husky init
+bunx husky init
 ```
 
 **Step 6: .husky/pre-commit 생성**
 
 ```bash
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
-
-cd frontend && npx lint-staged
+bunx lint-staged
 ```
 
 **Step 7: .husky/commit-msg 생성**
 
 ```bash
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
-
-npx --no -- commitlint --edit "$1"
+bunx --no -- commitlint --edit "$1"
 ```
 
 **Step 8: 커밋**
 
 ```bash
-git add .eslintrc.json .prettierrc .husky/ commitlint.config.js frontend/lint-staged.config.js package.json
+git add .eslintrc.json .prettierrc commitlint.config.js lint-staged.config.js .husky/
 git commit -m "chore: ESLint, Prettier, Husky, Commitlint 설정"
+```
+
+---
+
+## Task 4: FSD 디렉토리 구조 생성
+
+**Files:**
+- Create: FSD 레이어별 디렉토리 및 index.ts
+
+**Step 1: FSD 레이어 디렉토리 생성**
+
+```bash
+# app layer
+mkdir -p src/app/providers
+mkdir -p src/app/styles
+mkdir -p src/app/routes
+
+# pages layer
+mkdir -p src/pages/home/ui
+mkdir -p src/pages/dashboard/ui
+mkdir -p src/pages/project/ui
+mkdir -p src/pages/settings/ui
+
+# widgets layer
+mkdir -p src/widgets/task-board/ui
+mkdir -p src/widgets/task-board/model
+mkdir -p src/widgets/task-list/ui
+mkdir -p src/widgets/task-list/model
+mkdir -p src/widgets/task-calendar/ui
+mkdir -p src/widgets/task-calendar/model
+mkdir -p src/widgets/sidebar/ui
+
+# features layer
+mkdir -p src/features/create-task/ui
+mkdir -p src/features/create-task/model
+mkdir -p src/features/auth/ui
+mkdir -p src/features/auth/model
+mkdir -p src/features/drag-drop-task/ui
+mkdir -p src/features/drag-drop-task/model
+
+# entities layer
+mkdir -p src/entities/task/ui
+mkdir -p src/entities/task/model
+mkdir -p src/entities/task/api
+mkdir -p src/entities/project/ui
+mkdir -p src/entities/project/model
+mkdir -p src/entities/project/api
+mkdir -p src/entities/user/ui
+mkdir -p src/entities/user/model
+mkdir -p src/entities/comment/ui
+mkdir -p src/entities/comment/model
+
+# shared layer
+mkdir -p src/shared/ui/skeleton
+mkdir -p src/shared/ui/error-boundary
+mkdir -p src/shared/ui/connection-status
+mkdir -p src/shared/api
+mkdir -p src/shared/lib/i18n/locales
+mkdir -p src/shared/lib/error
+mkdir -p src/shared/lib/test-utils
+mkdir -p src/shared/store
+mkdir -p src/shared/config
+mkdir -p src/shared/types
+```
+
+**Step 2: shared 레이어 index.ts 파일 생성**
+
+Create `src/shared/ui/index.ts`:
+```ts
+export * from './skeleton';
+export * from './error-boundary';
+export * from './connection-status';
+```
+
+Create `src/shared/lib/index.ts`:
+```ts
+export * from './i18n';
+export * from './error';
+export * from './test-utils';
+```
+
+Create `src/shared/store/index.ts`:
+```ts
+export * from './auth';
+export * from './theme';
+export * from './ui';
+export * from './connection';
+```
+
+Create `src/shared/config/index.ts`:
+```ts
+// 설정 export
+```
+
+Create `src/shared/types/index.ts`:
+```ts
+// 타입 export
+```
+
+Create `src/shared/index.ts`:
+```ts
+export * from './ui';
+export * from './lib';
+export * from './store';
+export * from './config';
+export * from './types';
+```
+
+**Step 3: entities 레이어 index.ts 파일 생성**
+
+Create `src/entities/task/index.ts`:
+```ts
+// Task entity public API
+```
+
+Create `src/entities/project/index.ts`:
+```ts
+// Project entity public API
+```
+
+Create `src/entities/user/index.ts`:
+```ts
+// User entity public API
+```
+
+Create `src/entities/comment/index.ts`:
+```ts
+// Comment entity public API
+```
+
+Create `src/entities/index.ts`:
+```ts
+export * from './task';
+export * from './project';
+export * from './user';
+export * from './comment';
+```
+
+**Step 4: features 레이어 index.ts 파일 생성**
+
+Create `src/features/create-task/index.ts`:
+```ts
+// Create task feature public API
+```
+
+Create `src/features/auth/index.ts`:
+```ts
+// Auth feature public API
+```
+
+Create `src/features/drag-drop-task/index.ts`:
+```ts
+// Drag drop task feature public API
+```
+
+Create `src/features/index.ts`:
+```ts
+export * from './create-task';
+export * from './auth';
+export * from './drag-drop-task';
+```
+
+**Step 5: widgets 레이어 index.ts 파일 생성**
+
+Create `src/widgets/task-board/index.ts`:
+```ts
+// Task board widget public API
+```
+
+Create `src/widgets/task-list/index.ts`:
+```ts
+// Task list widget public API
+```
+
+Create `src/widgets/task-calendar/index.ts`:
+```ts
+// Task calendar widget public API
+```
+
+Create `src/widgets/sidebar/index.ts`:
+```ts
+// Sidebar widget public API
+```
+
+Create `src/widgets/index.ts`:
+```ts
+export * from './task-board';
+export * from './task-list';
+export * from './task-calendar';
+export * from './sidebar';
+```
+
+**Step 6: pages 레이어 index.ts 파일 생성**
+
+Create `src/pages/home/index.ts`:
+```ts
+// Home page public API
+```
+
+Create `src/pages/dashboard/index.ts`:
+```ts
+// Dashboard page public API
+```
+
+Create `src/pages/project/index.ts`:
+```ts
+// Project page public API
+```
+
+Create `src/pages/settings/index.ts`:
+```ts
+// Settings page public API
+```
+
+Create `src/pages/index.ts`:
+```ts
+export * from './home';
+export * from './dashboard';
+export * from './project';
+export * from './settings';
+```
+
+**Step 7: 커밋**
+
+```bash
+git add src/
+git commit -m "chore: FSD 디렉토리 구조 생성"
 ```
 
 ---
@@ -515,7 +544,7 @@ git commit -m "chore: ESLint, Prettier, Husky, Commitlint 설정"
 - Create: `frontend/vitest.setup.ts`
 - Create: `frontend/src/shared/lib/test-utils/index.ts`
 
-**Step 1: frontend/vitest.config.ts 생성**
+**Step 1: vitest.config.ts 생성**
 
 ```ts
 import { defineConfig } from 'vitest/config';
@@ -555,13 +584,13 @@ export default defineConfig({
 });
 ```
 
-**Step 2: frontend/vitest.setup.ts 생성**
+**Step 2: vitest.setup.ts 생성**
 
 ```ts
-import '@testing-library/jest-dom';
+import '@testing-library/jest-dom/vitest';
 ```
 
-**Step 3: BDD 헬퍼 함수 - frontend/src/shared/lib/test-utils/index.ts 생성**
+**Step 3: BDD 헬퍼 함수 생성 - src/shared/lib/test-utils/index.ts**
 
 ```ts
 import { describe, it } from 'vitest';
@@ -579,13 +608,13 @@ export { default as userEvent } from '@testing-library/user-event';
 
 **Step 4: 테스트 실행 확인**
 
-Run: `cd frontend && pnpm test`
+Run: `bun test`
 Expected: 테스트 파일이 없으므로 "No test files found" 메시지
 
 **Step 5: 커밋**
 
 ```bash
-git add frontend/vitest.config.ts frontend/vitest.setup.ts frontend/src/shared/lib/test-utils/
+git add vitest.config.ts vitest.setup.ts src/shared/lib/test-utils/
 git commit -m "chore: Vitest 테스트 환경 설정 및 BDD 헬퍼 추가"
 ```
 
@@ -595,10 +624,11 @@ git commit -m "chore: Vitest 테스트 환경 설정 및 BDD 헬퍼 추가"
 
 **Files:**
 - Create: `frontend/src/shared/lib/i18n/index.ts`
+- Create: `frontend/src/shared/lib/i18n/index.test.ts`
 - Create: `frontend/src/shared/lib/i18n/locales/ko.json`
 - Create: `frontend/src/shared/lib/i18n/locales/en.json`
 
-**Step 1: 실패하는 테스트 작성 - frontend/src/shared/lib/i18n/index.test.ts**
+**Step 1: 실패하는 테스트 작성 - src/shared/lib/i18n/index.test.ts**
 
 ```ts
 import { describe, it, expect } from 'vitest';
@@ -625,33 +655,10 @@ describe('i18n', () => {
 
 **Step 2: 테스트 실행하여 실패 확인**
 
-Run: `cd frontend && pnpm test src/shared/lib/i18n/index.test.ts`
+Run: `bun test src/shared/lib/i18n/index.test.ts`
 Expected: FAIL - "Cannot find module './index'"
 
-**Step 3: frontend/src/shared/lib/i18n/index.ts 구현**
-
-```ts
-import i18n from 'i18next';
-import { initReactI18next } from 'react-i18next';
-import ko from './locales/ko.json';
-import en from './locales/en.json';
-
-i18n.use(initReactI18next).init({
-  resources: {
-    ko: { translation: ko },
-    en: { translation: en },
-  },
-  lng: 'ko',
-  fallbackLng: 'ko',
-  interpolation: {
-    escapeValue: false,
-  },
-});
-
-export default i18n;
-```
-
-**Step 4: frontend/src/shared/lib/i18n/locales/ko.json 생성**
+**Step 3: src/shared/lib/i18n/locales/ko.json 생성**
 
 ```json
 {
@@ -726,7 +733,7 @@ export default i18n;
 }
 ```
 
-**Step 5: frontend/src/shared/lib/i18n/locales/en.json 생성**
+**Step 4: src/shared/lib/i18n/locales/en.json 생성**
 
 ```json
 {
@@ -801,15 +808,38 @@ export default i18n;
 }
 ```
 
+**Step 5: src/shared/lib/i18n/index.ts 구현**
+
+```ts
+import i18n from 'i18next';
+import { initReactI18next } from 'react-i18next';
+import ko from './locales/ko.json';
+import en from './locales/en.json';
+
+i18n.use(initReactI18next).init({
+  resources: {
+    ko: { translation: ko },
+    en: { translation: en },
+  },
+  lng: 'ko',
+  fallbackLng: 'ko',
+  interpolation: {
+    escapeValue: false,
+  },
+});
+
+export default i18n;
+```
+
 **Step 6: 테스트 실행하여 통과 확인**
 
-Run: `cd frontend && pnpm test src/shared/lib/i18n/index.test.ts`
+Run: `bun test src/shared/lib/i18n/index.test.ts`
 Expected: PASS
 
 **Step 7: 커밋**
 
 ```bash
-git add frontend/src/shared/lib/i18n/
+git add src/shared/lib/i18n/
 git commit -m "feat: i18n 설정 및 한국어/영어 번역 파일 추가"
 ```
 
@@ -819,11 +849,12 @@ git commit -m "feat: i18n 설정 및 한국어/영어 번역 파일 추가"
 
 **Files:**
 - Create: `frontend/src/shared/store/auth.ts`
+- Create: `frontend/src/shared/store/auth.test.ts`
 - Create: `frontend/src/shared/store/theme.ts`
 - Create: `frontend/src/shared/store/ui.ts`
 - Create: `frontend/src/shared/store/connection.ts`
 
-**Step 1: 실패하는 테스트 작성 - frontend/src/shared/store/auth.test.ts**
+**Step 1: 실패하는 테스트 작성 - src/shared/store/auth.test.ts**
 
 ```ts
 import { describe, it, expect } from 'vitest';
@@ -867,10 +898,10 @@ describe('auth store', () => {
 
 **Step 2: 테스트 실행하여 실패 확인**
 
-Run: `cd frontend && pnpm test src/shared/store/auth.test.ts`
+Run: `bun test src/shared/store/auth.test.ts`
 Expected: FAIL
 
-**Step 3: frontend/src/shared/store/auth.ts 구현**
+**Step 3: src/shared/store/auth.ts 구현**
 
 ```ts
 import { atom } from 'jotai';
@@ -893,10 +924,10 @@ export const isAuthenticatedAtom = atom((get) => get(currentUserAtom) !== null);
 
 **Step 4: 테스트 실행하여 통과 확인**
 
-Run: `cd frontend && pnpm test src/shared/store/auth.test.ts`
+Run: `bun test src/shared/store/auth.test.ts`
 Expected: PASS
 
-**Step 5: frontend/src/shared/store/theme.ts 생성**
+**Step 5: src/shared/store/theme.ts 생성**
 
 ```ts
 import { atom } from 'jotai';
@@ -906,16 +937,16 @@ export type ThemeMode = 'light' | 'dark' | 'system';
 export const themeModeAtom = atom<ThemeMode>('system');
 ```
 
-**Step 6: frontend/src/shared/store/ui.ts 생성**
+**Step 6: src/shared/store/ui.ts 생성**
 
 ```ts
 import { atom } from 'jotai';
 
 export const sidebarOpenAtom = atom<boolean>(true);
-export const modalOpenAtom = atom<string | null>(null); // modal ID or null
+export const modalOpenAtom = atom<string | null>(null);
 ```
 
-**Step 7: frontend/src/shared/store/connection.ts 생성**
+**Step 7: src/shared/store/connection.ts 생성**
 
 ```ts
 import { atom } from 'jotai';
@@ -925,7 +956,7 @@ export type ConnectionStatus = 'online' | 'offline' | 'syncing';
 export const connectionStatusAtom = atom<ConnectionStatus>('online');
 ```
 
-**Step 8: frontend/src/shared/store/index.ts 업데이트**
+**Step 8: src/shared/store/index.ts 업데이트**
 
 ```ts
 export * from './auth';
@@ -937,7 +968,7 @@ export * from './connection';
 **Step 9: 커밋**
 
 ```bash
-git add frontend/src/shared/store/
+git add src/shared/store/
 git commit -m "feat: Jotai 전역 스토어 설정 (auth, theme, ui, connection)"
 ```
 
@@ -950,7 +981,7 @@ git commit -m "feat: Jotai 전역 스토어 설정 (auth, theme, ui, connection)
 - Create: `frontend/src/shared/ui/skeleton/Skeleton.test.tsx`
 - Create: `frontend/src/shared/ui/skeleton/index.ts`
 
-**Step 1: 실패하는 테스트 작성 - frontend/src/shared/ui/skeleton/Skeleton.test.tsx**
+**Step 1: 실패하는 테스트 작성 - src/shared/ui/skeleton/Skeleton.test.tsx**
 
 ```tsx
 import { describe, it, expect } from 'vitest';
@@ -992,10 +1023,10 @@ describe('Skeleton', () => {
 
 **Step 2: 테스트 실행하여 실패 확인**
 
-Run: `cd frontend && pnpm test src/shared/ui/skeleton/Skeleton.test.tsx`
+Run: `bun test src/shared/ui/skeleton/Skeleton.test.tsx`
 Expected: FAIL
 
-**Step 3: frontend/src/shared/ui/skeleton/Skeleton.tsx 구현**
+**Step 3: src/shared/ui/skeleton/Skeleton.tsx 구현**
 
 ```tsx
 import { HTMLAttributes } from 'react';
@@ -1024,7 +1055,7 @@ export const Skeleton = ({
 
   const animationClasses = {
     pulse: 'animate-pulse',
-    wave: 'animate-pulse', // 단순화
+    wave: 'animate-pulse',
   };
 
   const combinedStyle = {
@@ -1045,26 +1076,20 @@ export const Skeleton = ({
 
 **Step 4: 테스트 실행하여 통과 확인**
 
-Run: `cd frontend && pnpm test src/shared/ui/skeleton/Skeleton.test.tsx`
+Run: `bun test src/shared/ui/skeleton/Skeleton.test.tsx`
 Expected: PASS
 
-**Step 5: frontend/src/shared/ui/skeleton/index.ts 생성**
+**Step 5: src/shared/ui/skeleton/index.ts 생성**
 
 ```ts
 export { Skeleton } from './Skeleton';
 export type { SkeletonProps } from './Skeleton';
 ```
 
-**Step 6: frontend/src/shared/ui/index.ts 업데이트**
-
-```ts
-export * from './skeleton';
-```
-
-**Step 7: 커밋**
+**Step 6: 커밋**
 
 ```bash
-git add frontend/src/shared/ui/
+git add src/shared/ui/skeleton/
 git commit -m "feat: 공통 Skeleton UI 컴포넌트 추가"
 ```
 
@@ -1076,7 +1101,7 @@ git commit -m "feat: 공통 Skeleton UI 컴포넌트 추가"
 - Create: `frontend/src/shared/ui/error-boundary/ErrorBoundary.tsx`
 - Create: `frontend/src/shared/ui/error-boundary/index.ts`
 
-**Step 1: frontend/src/shared/ui/error-boundary/ErrorBoundary.tsx 구현**
+**Step 1: src/shared/ui/error-boundary/ErrorBoundary.tsx 구현**
 
 ```tsx
 'use client';
@@ -1117,7 +1142,6 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, State> {
   }
 }
 
-// 레이어별 Error Boundary
 export const AppErrorBoundary = ({
   children,
   fallback,
@@ -1126,7 +1150,7 @@ export const AppErrorBoundary = ({
   fallback?: ReactNode;
 }) => (
   <ErrorBoundary
-    fallback={fallback || <div>앱에서 오류가 발생했습니다.</div>}
+    fallback={fallback || <div className="p-8 text-center">앱에서 오류가 발생했습니다.</div>}
   >
     {children}
   </ErrorBoundary>
@@ -1140,7 +1164,7 @@ export const PageErrorBoundary = ({
   fallback?: ReactNode;
 }) => (
   <ErrorBoundary
-    fallback={fallback || <div>페이지를 불러오는 중 오류가 발생했습니다.</div>}
+    fallback={fallback || <div className="p-4 text-center">페이지를 불러오는 중 오류가 발생했습니다.</div>}
   >
     {children}
   </ErrorBoundary>
@@ -1154,14 +1178,14 @@ export const WidgetErrorBoundary = ({
   fallback?: ReactNode;
 }) => (
   <ErrorBoundary
-    fallback={fallback || <div>컴포넌트를 불러오는 중 오류가 발생했습니다.</div>}
+    fallback={fallback || <div className="p-2 text-center text-sm">오류가 발생했습니다.</div>}
   >
     {children}
   </ErrorBoundary>
 );
 ```
 
-**Step 2: frontend/src/shared/ui/error-boundary/index.ts 생성**
+**Step 2: src/shared/ui/error-boundary/index.ts 생성**
 
 ```ts
 export {
@@ -1173,7 +1197,7 @@ export {
 export type { ErrorBoundaryProps } from './ErrorBoundary';
 ```
 
-**Step 3: frontend/src/shared/ui/index.ts 업데이트**
+**Step 3: src/shared/ui/index.ts 업데이트**
 
 ```ts
 export * from './skeleton';
@@ -1183,151 +1207,127 @@ export * from './error-boundary';
 **Step 4: 커밋**
 
 ```bash
-git add frontend/src/shared/ui/error-boundary/
+git add src/shared/ui/error-boundary/ src/shared/ui/index.ts
 git commit -m "feat: Error Boundary 컴포넌트 추가 (App, Page, Widget 레벨)"
 ```
 
 ---
 
-## Task 10: 백엔드 Rust 프로젝트 생성
+## Task 10: Connection Status 컴포넌트
 
 **Files:**
-- Create: `backend/Cargo.toml`
-- Create: `backend/src/main.rs`
-- Create: `backend/.env.example`
+- Create: `frontend/src/shared/ui/connection-status/ConnectionIcon.tsx`
+- Create: `frontend/src/shared/ui/connection-status/ConnectionIcon.test.tsx`
+- Create: `frontend/src/shared/ui/connection-status/index.ts`
 
-**Step 1: backend 디렉토리 및 Cargo.toml 생성**
+**Step 1: 실패하는 테스트 작성 - src/shared/ui/connection-status/ConnectionIcon.test.tsx**
+
+```tsx
+import { describe, it, expect } from 'vitest';
+import { render, screen } from '@testing-library/react';
+import { Provider, createStore } from 'jotai';
+import { ConnectionIcon } from './ConnectionIcon';
+import { connectionStatusAtom } from '@/shared/store/connection';
+
+describe('ConnectionIcon', () => {
+  it('온라인 상태에서 초록색 아이콘을 표시한다', () => {
+    const store = createStore();
+    store.set(connectionStatusAtom, 'online');
+
+    render(
+      <Provider store={store}>
+        <ConnectionIcon />
+      </Provider>
+    );
+
+    expect(screen.getByTitle('online')).toBeInTheDocument();
+  });
+
+  it('오프라인 상태에서 회색 아이콘을 표시한다', () => {
+    const store = createStore();
+    store.set(connectionStatusAtom, 'offline');
+
+    render(
+      <Provider store={store}>
+        <ConnectionIcon />
+      </Provider>
+    );
+
+    expect(screen.getByTitle('offline')).toBeInTheDocument();
+  });
+});
+```
+
+**Step 2: 테스트 실행하여 실패 확인**
+
+Run: `bun test src/shared/ui/connection-status/ConnectionIcon.test.tsx`
+Expected: FAIL
+
+**Step 3: src/shared/ui/connection-status/ConnectionIcon.tsx 구현**
+
+```tsx
+'use client';
+
+import { useAtomValue } from 'jotai';
+import WifiIcon from '@mui/icons-material/Wifi';
+import WifiOffIcon from '@mui/icons-material/WifiOff';
+import SyncIcon from '@mui/icons-material/Sync';
+import { connectionStatusAtom } from '@/shared/store/connection';
+
+export const ConnectionIcon = () => {
+  const status = useAtomValue(connectionStatusAtom);
+
+  const icons = {
+    online: <WifiIcon className="text-green-500" />,
+    offline: <WifiOffIcon className="text-gray-400" />,
+    syncing: <SyncIcon className="text-blue-500 animate-spin" />,
+  };
+
+  return (
+    <div title={status} className="flex items-center">
+      {icons[status]}
+    </div>
+  );
+};
+```
+
+**Step 4: 테스트 실행하여 통과 확인**
+
+Run: `bun test src/shared/ui/connection-status/ConnectionIcon.test.tsx`
+Expected: PASS
+
+**Step 5: src/shared/ui/connection-status/index.ts 생성**
+
+```ts
+export { ConnectionIcon } from './ConnectionIcon';
+```
+
+**Step 6: src/shared/ui/index.ts 업데이트**
+
+```ts
+export * from './skeleton';
+export * from './error-boundary';
+export * from './connection-status';
+```
+
+**Step 7: 커밋**
 
 ```bash
-mkdir -p backend/src
-```
-
-```toml
-[package]
-name = "task-management-backend"
-version = "0.1.0"
-edition = "2021"
-
-[dependencies]
-actix-web = "4"
-actix-cors = "0.7"
-actix-rt = "2"
-async-graphql = { version = "7", features = ["chrono"] }
-async-graphql-actix-web = "7"
-sqlx = { version = "0.7", features = ["runtime-tokio", "sqlite", "chrono"] }
-tokio = { version = "1", features = ["full"] }
-serde = { version = "1", features = ["derive"] }
-serde_json = "1"
-chrono = { version = "0.4", features = ["serde"] }
-uuid = { version = "1", features = ["v4", "serde"] }
-jsonwebtoken = "9"
-bcrypt = "0.15"
-reqwest = { version = "0.11", features = ["json"] }
-dotenvy = "0.15"
-thiserror = "1"
-tracing = "0.1"
-tracing-subscriber = { version = "0.3", features = ["env-filter"] }
-
-[dev-dependencies]
-actix-rt = "2"
-```
-
-**Step 2: backend/src/main.rs 생성**
-
-```rust
-use actix_cors::Cors;
-use actix_web::{web, App, HttpServer};
-use dotenvy::dotenv;
-use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
-
-mod config;
-mod db;
-mod graphql;
-mod auth;
-
-#[actix_web::main]
-async fn main() -> std::io::Result<()> {
-    dotenv().ok();
-
-    tracing_subscriber::registry()
-        .with(tracing_subscriber::EnvFilter::new(
-            std::env::var("RUST_LOG").unwrap_or_else(|_| "info".into()),
-        ))
-        .with(tracing_subscriber::fmt::layer())
-        .init();
-
-    tracing::info!("Starting server...");
-
-    HttpServer::new(move || {
-        let cors = Cors::default()
-            .allow_any_origin()
-            .allow_any_method()
-            .allow_any_header();
-
-        App::new()
-            .wrap(cors)
-            .route("/health", web::get().to(|| async { "OK" }))
-    })
-    .bind("127.0.0.1:8080")?
-    .run()
-    .await
-}
-```
-
-**Step 3: 모듈 파일 생성**
-
-Create `backend/src/config/mod.rs`:
-```rust
-// Configuration module
-```
-
-Create `backend/src/db/mod.rs`:
-```rust
-// Database module
-```
-
-Create `backend/src/graphql/mod.rs`:
-```rust
-// GraphQL module
-```
-
-Create `backend/src/auth/mod.rs`:
-```rust
-// Auth module
-```
-
-**Step 4: backend/.env.example 생성**
-
-```
-DATABASE_URL=sqlite:./data.db
-JWT_SECRET=your-secret-key-change-in-production
-GOOGLE_CLIENT_ID=your-google-client-id
-GOOGLE_CLIENT_SECRET=your-google-client-secret
-RUST_LOG=info
-```
-
-**Step 5: 빌드 확인**
-
-Run: `cd backend && cargo check`
-Expected: 컴파일 성공
-
-**Step 6: 커밋**
-
-```bash
-git add backend/
-git commit -m "chore: Rust 백엔드 프로젝트 초기 설정"
+git add src/shared/ui/connection-status/ src/shared/ui/index.ts
+git commit -m "feat: Connection Status 아이콘 컴포넌트 추가"
 ```
 
 ---
 
-## Task 11: Next.js App Router 설정
+## Task 11: Next.js App Router 기본 페이지 설정
 
 **Files:**
 - Create: `frontend/src/app/routes/layout.tsx`
 - Create: `frontend/src/app/routes/page.tsx`
 - Create: `frontend/src/app/styles/globals.css`
+- Create: `frontend/next-env.d.ts`
 
-**Step 1: frontend/src/app/styles/globals.css 생성**
+**Step 1: src/app/styles/globals.css 생성**
 
 ```css
 @tailwind base;
@@ -1335,7 +1335,7 @@ git commit -m "chore: Rust 백엔드 프로젝트 초기 설정"
 @tailwind utilities;
 ```
 
-**Step 2: frontend/src/app/routes/layout.tsx 생성**
+**Step 2: src/app/routes/layout.tsx 생성**
 
 ```tsx
 import type { Metadata } from 'next';
@@ -1375,46 +1375,158 @@ export default function RootLayout({
 }
 ```
 
-**Step 3: frontend/src/app/routes/page.tsx 생성**
+**Step 3: src/app/routes/page.tsx 생성**
 
 ```tsx
 export default function HomePage() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-center p-24">
-      <h1 className="text-4xl font-bold">Task Management Tool</h1>
-      <p className="mt-4 text-gray-600">업무 관리 툴에 오신 것을 환영합니다.</p>
+      <h1 className="text-4xl font-bold mb-4">Task Management Tool</h1>
+      <p className="text-gray-600">업무 관리 툴에 오신 것을 환영합니다.</p>
     </main>
   );
 }
 ```
 
-**Step 4: MUI Next.js integration 패키지 추가**
+**Step 4: next-env.d.ts 생성**
 
-`frontend/package.json`의 dependencies에 추가:
-```json
-"@mui/material-nextjs": "^5.15.0"
+```ts
+/// <reference types="next" />
+/// <reference types="next/image-types/global" />
+
+// NOTE: This file should not be edited
+// see https://nextjs.org/docs/basic-features/typescript for more information.
 ```
 
-**Step 5: next.config.js 업데이트 - appDir 경로 설정**
+**Step 5: 개발 서버 실행 확인**
 
-```js
-/** @type {import('next').NextConfig} */
-const nextConfig = {
-  experimental: {
-    ppr: true,
-  },
-  // FSD 구조에 맞게 app 디렉토리 위치 변경
-  distDir: '.next',
-};
-
-module.exports = nextConfig;
-```
+Run: `bun dev`
+Expected: http://localhost:3000 에서 페이지 표시
 
 **Step 6: 커밋**
 
 ```bash
-git add frontend/src/app/ frontend/package.json frontend/next.config.js
+git add src/app/ next-env.d.ts
 git commit -m "feat: Next.js App Router 기본 레이아웃 및 홈페이지 설정"
+```
+
+---
+
+## Task 12: 백엔드 Rust 프로젝트 생성
+
+**Files:**
+- Create: `backend/Cargo.toml`
+- Create: `backend/src/main.rs`
+- Create: `backend/.env.example`
+- Create: `backend/.gitignore`
+
+**Step 1: backend 디렉토리 생성**
+
+```bash
+mkdir -p backend/src
+cd backend
+```
+
+**Step 2: Cargo.toml 생성**
+
+```toml
+[package]
+name = "task-management-backend"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+actix-web = "4"
+actix-cors = "0.7"
+actix-rt = "2"
+async-graphql = { version = "7", features = ["chrono"] }
+async-graphql-actix-web = "7"
+sqlx = { version = "0.7", features = ["runtime-tokio", "sqlite", "chrono"] }
+tokio = { version = "1", features = ["full"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+chrono = { version = "0.4", features = ["serde"] }
+uuid = { version = "1", features = ["v4", "serde"] }
+jsonwebtoken = "9"
+bcrypt = "0.15"
+reqwest = { version = "0.11", features = ["json"] }
+dotenvy = "0.15"
+thiserror = "1"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+[dev-dependencies]
+actix-rt = "2"
+```
+
+**Step 3: src/main.rs 생성**
+
+```rust
+use actix_cors::Cors;
+use actix_web::{web, App, HttpServer};
+use dotenvy::dotenv;
+use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
+
+#[actix_web::main]
+async fn main() -> std::io::Result<()> {
+    dotenv().ok();
+
+    tracing_subscriber::registry()
+        .with(tracing_subscriber::EnvFilter::new(
+            std::env::var("RUST_LOG").unwrap_or_else(|_| "info".into()),
+        ))
+        .with(tracing_subscriber::fmt::layer())
+        .init();
+
+    tracing::info!("Starting server at http://127.0.0.1:8080");
+
+    HttpServer::new(move || {
+        let cors = Cors::default()
+            .allow_any_origin()
+            .allow_any_method()
+            .allow_any_header();
+
+        App::new()
+            .wrap(cors)
+            .route("/health", web::get().to(|| async { "OK" }))
+    })
+    .bind("127.0.0.1:8080")?
+    .run()
+    .await
+}
+```
+
+**Step 4: .env.example 생성**
+
+```
+DATABASE_URL=sqlite:./data.db
+JWT_SECRET=your-secret-key-change-in-production
+GOOGLE_CLIENT_ID=your-google-client-id
+GOOGLE_CLIENT_SECRET=your-google-client-secret
+RUST_LOG=info
+```
+
+**Step 5: .gitignore 생성**
+
+```
+/target
+Cargo.lock
+.env
+*.db
+*.db-journal
+```
+
+**Step 6: 빌드 확인**
+
+Run: `cargo check`
+Expected: 컴파일 성공
+
+**Step 7: git 초기화 및 커밋**
+
+```bash
+git init
+git add Cargo.toml src/ .env.example .gitignore
+git commit -m "chore: Rust 백엔드 프로젝트 초기 설정"
 ```
 
 ---
@@ -1424,63 +1536,74 @@ git commit -m "feat: Next.js App Router 기본 레이아웃 및 홈페이지 설
 Phase 1 완료 후 구조:
 
 ```
-/
-├── package.json              # 모노레포 루트
+frontend/
+├── package.json
+├── tsconfig.json
+├── next.config.js
+├── tailwind.config.ts
+├── postcss.config.js
+├── vitest.config.ts
+├── vitest.setup.ts
+├── next-env.d.ts
+├── .eslintrc.json
+├── .prettierrc
 ├── .gitignore
 ├── .nvmrc
 ├── commitlint.config.js
+├── lint-staged.config.js
 ├── .husky/
 │   ├── pre-commit
 │   └── commit-msg
-│
-├── frontend/
-│   ├── package.json
-│   ├── tsconfig.json
-│   ├── next.config.js
-│   ├── tailwind.config.ts
-│   ├── postcss.config.js
-│   ├── vitest.config.ts
-│   ├── vitest.setup.ts
-│   ├── .eslintrc.json
-│   ├── .prettierrc
-│   ├── lint-staged.config.js
-│   └── src/
-│       ├── app/
-│       │   ├── providers/
-│       │   ├── styles/
-│       │   │   └── globals.css
-│       │   └── routes/
-│       │       ├── layout.tsx
-│       │       └── page.tsx
-│       ├── pages/
-│       ├── widgets/
-│       ├── features/
-│       ├── entities/
-│       └── shared/
-│           ├── ui/
-│           │   ├── skeleton/
-│           │   └── error-boundary/
-│           ├── lib/
-│           │   ├── i18n/
-│           │   └── test-utils/
-│           ├── store/
-│           │   ├── auth.ts
-│           │   ├── theme.ts
-│           │   ├── ui.ts
-│           │   └── connection.ts
-│           ├── api/
-│           ├── config/
-│           └── types/
-│
-└── backend/
-    ├── Cargo.toml
-    ├── .env.example
-    └── src/
-        ├── main.rs
+└── src/
+    ├── app/
+    │   ├── providers/
+    │   ├── styles/
+    │   │   └── globals.css
+    │   └── routes/
+    │       ├── layout.tsx
+    │       └── page.tsx
+    ├── pages/
+    │   ├── home/
+    │   ├── dashboard/
+    │   ├── project/
+    │   └── settings/
+    ├── widgets/
+    │   ├── task-board/
+    │   ├── task-list/
+    │   ├── task-calendar/
+    │   └── sidebar/
+    ├── features/
+    │   ├── create-task/
+    │   ├── auth/
+    │   └── drag-drop-task/
+    ├── entities/
+    │   ├── task/
+    │   ├── project/
+    │   ├── user/
+    │   └── comment/
+    └── shared/
+        ├── ui/
+        │   ├── skeleton/
+        │   ├── error-boundary/
+        │   └── connection-status/
+        ├── lib/
+        │   ├── i18n/
+        │   └── test-utils/
+        ├── store/
+        │   ├── auth.ts
+        │   ├── theme.ts
+        │   ├── ui.ts
+        │   └── connection.ts
+        ├── api/
         ├── config/
-        ├── db/
-        ├── graphql/
-        └── auth/
+        └── types/
+
+backend/
+├── Cargo.toml
+├── .env.example
+├── .gitignore
+└── src/
+    └── main.rs
 ```
 
 ---
@@ -1489,13 +1612,13 @@ Phase 1 완료 후 구조:
 
 **Phase 2: 백엔드 핵심 기능**
 - SQLite 데이터베이스 스키마 및 마이그레이션
-- GraphQL 스키마 (async-graphql)
+- GraphQL 스키마 (async-graphql, Relay 스펙)
 - 인증 (Google OAuth, JWT, CSRF)
-- WebSocket 서버
+- WebSocket 서버 (Subscription, Yjs)
 
 **Phase 3: 프론트엔드 핵심 기능**
 - Relay 설정 및 GraphQL 연동
-- 인증 플로우 구현
+- 인증 플로우 구현 (Google OAuth)
 - 라우팅 및 AuthGuard
 
 **Phase 4: 비즈니스 로직**
