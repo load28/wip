@@ -11,6 +11,8 @@
   },
   "auth": {
     "login": {
+      "title": "Login",
+      "description": "Please log in to continue",
       "button": "Login with Google",
       "error": "Login failed"
     },
