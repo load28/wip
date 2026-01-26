@@ -1,8 +1,45 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import Box from '@mui/material/Box';
+import CircularProgress from '@mui/material/CircularProgress';
+import { useAuth } from '@/features/auth';
+
 export default function HomePage() {
+  const router = useRouter();
+  const { isAuthenticated, fetchCurrentUser } = useAuth();
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        await fetchCurrentUser();
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    checkAuth();
+  }, [fetchCurrentUser]);
+
+  useEffect(() => {
+    if (!isLoading) {
+      if (isAuthenticated) {
+        router.replace('/dashboard');
+      } else {
+        router.replace('/login');
+      }
+    }
+  }, [isLoading, isAuthenticated, router]);
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-24">
-      <h1 className="mb-4 text-4xl font-bold">Task Management Tool</h1>
-      <p className="text-gray-600">업무 관리 툴에 오신 것을 환영합니다.</p>
-    </main>
+    <Box
+      display="flex"
+      alignItems="center"
+      justifyContent="center"
+      minHeight="100vh"
+    >
+      <CircularProgress />
+    </Box>
   );
 }
