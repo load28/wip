@@ -1,2 +1,1 @@
-// Sidebar widget public API
-export {};
+export { Sidebar } from './ui/Sidebar';
