@@ -47,6 +47,7 @@
       "priority": "Priority"
     },
     "form": {
+      "createTitle": "Create New Task",
       "title": "Title",
       "titleRequired": "Please enter a title",
       "titleMaxLength": "Title must be 100 characters or less",
@@ -57,7 +58,7 @@
     },
     "status": {
       "todo": "To Do",
-      "inProgress": "In Progress",
+      "inprogress": "In Progress",
       "done": "Done"
     },
     "priority": {

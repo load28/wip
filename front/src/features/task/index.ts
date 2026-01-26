@@ -1,4 +1,5 @@
 export { useTasks } from './model/useTasks';
+export { CreateTaskModal } from './ui';
 export type {
   Task,
   CreateTaskInput,

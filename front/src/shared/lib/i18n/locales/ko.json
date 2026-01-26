@@ -47,6 +47,7 @@
       "priority": "우선순위"
     },
     "form": {
+      "createTitle": "새 태스크 생성",
       "title": "제목",
       "titleRequired": "제목을 입력해주세요",
       "titleMaxLength": "제목은 100자 이내로 입력해주세요",
@@ -57,7 +58,7 @@
     },
     "status": {
       "todo": "할 일",
-      "inProgress": "진행 중",
+      "inprogress": "진행 중",
       "done": "완료"
     },
     "priority": {
