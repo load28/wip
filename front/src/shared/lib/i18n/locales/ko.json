@@ -1,0 +1,70 @@
+{
+  "common": {
+    "loading": "로딩 중...",
+    "error": "오류가 발생했습니다",
+    "retry": "다시 시도",
+    "save": "저장",
+    "cancel": "취소",
+    "delete": "삭제",
+    "edit": "수정",
+    "create": "생성"
+  },
+  "auth": {
+    "login": {
+      "button": "Google로 로그인",
+      "error": "로그인에 실패했습니다"
+    },
+    "logout": {
+      "button": "로그아웃"
+    }
+  },
+  "project": {
+    "form": {
+      "title": "프로젝트 이름",
+      "description": "설명",
+      "submit": "생성하기",
+      "cancel": "취소"
+    },
+    "list": {
+      "empty": "프로젝트가 없습니다",
+      "create": "새 프로젝트"
+    }
+  },
+  "task": {
+    "card": {
+      "dueDate": "마감일",
+      "assignee": "담당자",
+      "priority": "우선순위"
+    },
+    "form": {
+      "title": "제목",
+      "titleRequired": "제목을 입력해주세요",
+      "titleMaxLength": "제목은 100자 이내로 입력해주세요",
+      "description": "설명",
+      "descriptionMaxLength": "설명은 1000자 이내로 입력해주세요",
+      "submit": "생성",
+      "cancel": "취소"
+    },
+    "status": {
+      "todo": "할 일",
+      "inProgress": "진행 중",
+      "done": "완료"
+    },
+    "priority": {
+      "low": "낮음",
+      "medium": "보통",
+      "high": "높음"
+    }
+  },
+  "dashboard": {
+    "header": {
+      "welcome": "환영합니다",
+      "description": "업무를 효율적으로 관리하세요"
+    }
+  },
+  "settings": {
+    "title": "설정",
+    "language": "언어",
+    "theme": "테마"
+  }
+}

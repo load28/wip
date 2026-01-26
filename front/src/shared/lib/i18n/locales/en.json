@@ -1,0 +1,70 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "retry": "Retry",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create"
+  },
+  "auth": {
+    "login": {
+      "button": "Login with Google",
+      "error": "Login failed"
+    },
+    "logout": {
+      "button": "Logout"
+    }
+  },
+  "project": {
+    "form": {
+      "title": "Project Name",
+      "description": "Description",
+      "submit": "Create",
+      "cancel": "Cancel"
+    },
+    "list": {
+      "empty": "No projects",
+      "create": "New Project"
+    }
+  },
+  "task": {
+    "card": {
+      "dueDate": "Due Date",
+      "assignee": "Assignee",
+      "priority": "Priority"
+    },
+    "form": {
+      "title": "Title",
+      "titleRequired": "Please enter a title",
+      "titleMaxLength": "Title must be 100 characters or less",
+      "description": "Description",
+      "descriptionMaxLength": "Description must be 1000 characters or less",
+      "submit": "Create",
+      "cancel": "Cancel"
+    },
+    "status": {
+      "todo": "To Do",
+      "inProgress": "In Progress",
+      "done": "Done"
+    },
+    "priority": {
+      "low": "Low",
+      "medium": "Medium",
+      "high": "High"
+    }
+  },
+  "dashboard": {
+    "header": {
+      "welcome": "Welcome",
+      "description": "Manage your tasks efficiently"
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "language": "Language",
+    "theme": "Theme"
+  }
+}
