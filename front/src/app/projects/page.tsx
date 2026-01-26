@@ -1,35 +1,31 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import CardActions from '@mui/material/CardActions';
-import IconButton from '@mui/material/IconButton';
 import CircularProgress from '@mui/material/CircularProgress';
 import AddIcon from '@mui/icons-material/Add';
-import DeleteIcon from '@mui/icons-material/Delete';
 import FolderIcon from '@mui/icons-material/Folder';
 import { useProjects } from '@/features/project';
 import { CreateProjectModal } from '@/features/project/ui/CreateProjectModal';
+import { ProjectCard } from '@/entities/project';
 
 export default function ProjectsPage() {
+  const router = useRouter();
   const { t } = useTranslation();
-  const { projects, isLoading, fetchProjects, deleteProject } = useProjects();
+  const { projects, isLoading, fetchProjects } = useProjects();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     fetchProjects();
   }, [fetchProjects]);
 
-  const handleDelete = async (id: string) => {
-    if (window.confirm(t('project.delete.confirm'))) {
-      await deleteProject(id);
-    }
+  const handleProjectClick = (projectId: string) => {
+    router.push(`/projects/${projectId}`);
   };
 
   return (
@@ -67,27 +63,10 @@ export default function ProjectsPage() {
         <Grid container spacing={3}>
           {projects.map((project) => (
             <Grid key={project.id} size={{ xs: 12, sm: 6, md: 4 }}>
-              <Card>
-                <CardContent>
-                  <Typography variant="h6" gutterBottom>
-                    {project.name}
-                  </Typography>
-                  {project.description && (
-                    <Typography variant="body2" color="text.secondary">
-                      {project.description}
-                    </Typography>
-                  )}
-                </CardContent>
-                <CardActions>
-                  <IconButton
-                    size="small"
-                    color="error"
-                    onClick={() => handleDelete(project.id)}
-                  >
-                    <DeleteIcon />
-                  </IconButton>
-                </CardActions>
-              </Card>
+              <ProjectCard
+                project={project}
+                onClick={() => handleProjectClick(project.id)}
+              />
             </Grid>
           ))}
         </Grid>
