@@ -1,2 +1,1 @@
-// Task entity public API
-export {};
+export { TaskCard } from './ui';
