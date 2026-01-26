@@ -33,6 +33,17 @@ vi.mock('@/features/auth', () => ({
   AuthGuard: ({ children }: { children: React.ReactNode }) => <>{children}</>,
 }));
 
+vi.mock('@/features/project', () => ({
+  useProjects: () => ({
+    projects: [
+      { id: '1', name: '프로젝트 1' },
+      { id: '2', name: '프로젝트 2' },
+    ],
+    isLoading: false,
+    fetchProjects: vi.fn(),
+  }),
+}));
+
 describe('DashboardPage', () => {
   it('대시보드 헤더가 렌더링된다', () => {
     const store = createStore();

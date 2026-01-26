@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
@@ -10,6 +11,7 @@ import FolderIcon from '@mui/icons-material/Folder';
 import TaskIcon from '@mui/icons-material/Task';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { useAuth } from '@/features/auth';
+import { useProjects } from '@/features/project';
 
 interface StatCardProps {
   title: string;
@@ -52,12 +54,16 @@ function StatCard({ title, value, icon, color }: StatCardProps) {
 export default function DashboardPage() {
   const { t } = useTranslation();
   const { currentUser } = useAuth();
+  const { projects, fetchProjects } = useProjects();
 
-  // TODO: 실제 데이터 연동
+  useEffect(() => {
+    fetchProjects();
+  }, [fetchProjects]);
+
   const stats = {
-    projects: 0,
-    tasks: 0,
-    completed: 0,
+    projects: projects.length,
+    tasks: 0, // TODO: 전체 태스크 수 API 연동
+    completed: 0, // TODO: 완료된 태스크 수 API 연동
   };
 
   return (
