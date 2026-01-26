@@ -21,15 +21,23 @@
     }
   },
   "project": {
+    "list": {
+      "title": "Projects",
+      "empty": "No projects",
+      "create": "New Project"
+    },
     "form": {
+      "createTitle": "Create New Project",
       "title": "Project Name",
       "description": "Description",
       "submit": "Create",
-      "cancel": "Cancel"
+      "cancel": "Cancel",
+      "nameRequired": "Please enter a project name",
+      "nameMaxLength": "Project name must be 100 characters or less",
+      "descriptionMaxLength": "Description must be 500 characters or less"
     },
-    "list": {
-      "empty": "No projects",
-      "create": "New Project"
+    "delete": {
+      "confirm": "Are you sure you want to delete this project?"
     }
   },
   "task": {
