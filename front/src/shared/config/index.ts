@@ -1,2 +1,1 @@
-// Config exports
-export {};
+export * from './auth';
