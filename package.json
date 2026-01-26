@@ -1,0 +1,26 @@
+{
+  "name": "wip-monorepo",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "husky": "^9.1.0",
+    "lint-staged": "^15.4.0",
+    "@commitlint/cli": "^19.7.0",
+    "@commitlint/config-conventional": "^19.7.0"
+  },
+  "lint-staged": {
+    "front/**/*.{js,jsx,ts,tsx}": [
+      "bun run --cwd front eslint --fix",
+      "bun run --cwd front prettier --write"
+    ],
+    "front/**/*.{json,css,scss,md}": [
+      "bun run --cwd front prettier --write"
+    ],
+    "backend/**/*.rs": [
+      "cargo fmt --manifest-path backend/Cargo.toml --"
+    ]
+  }
+}
