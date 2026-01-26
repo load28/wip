@@ -3,6 +3,8 @@ use actix_web::{web, App, HttpServer};
 use dotenvy::dotenv;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
+use task_management_backend::config::Config;
+
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     dotenv().ok();
@@ -14,15 +16,20 @@ async fn main() -> std::io::Result<()> {
         .with(tracing_subscriber::fmt::layer())
         .init();
 
+    let config = Config::from_env();
+    let frontend_url = config.frontend_url.clone();
+
     tracing::info!("Starting server at http://127.0.0.1:8080");
 
     HttpServer::new(move || {
         let cors = Cors::default()
-            .allow_any_origin()
+            .allowed_origin(&frontend_url)
             .allow_any_method()
-            .allow_any_header();
+            .allow_any_header()
+            .supports_credentials();
 
         App::new()
+            .app_data(web::Data::new(config.clone()))
             .wrap(cors)
             .route("/health", web::get().to(|| async { "OK" }))
     })
