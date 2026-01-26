@@ -58,10 +58,20 @@
       "high": "High"
     }
   },
+  "nav": {
+    "dashboard": "Dashboard",
+    "projects": "Projects",
+    "settings": "Settings"
+  },
   "dashboard": {
     "header": {
       "welcome": "Welcome",
       "description": "Manage your tasks efficiently"
+    },
+    "stats": {
+      "projects": "Projects",
+      "tasks": "Tasks",
+      "completed": "Completed"
     }
   },
   "settings": {
