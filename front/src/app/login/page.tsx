@@ -1,23 +1,38 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Box from '@mui/material/Box';
+import Divider from '@mui/material/Divider';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
+import Alert from '@mui/material/Alert';
 import { useTranslation } from 'react-i18next';
-import { useAuth, GoogleLoginButton } from '@/features/auth';
+import {
+  useAuth,
+  GoogleLoginButton,
+  PasskeyLoginButton,
+} from '@/features/auth';
 
 export default function LoginPage() {
   const router = useRouter();
   const { t } = useTranslation();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, loginWithPasskey, isPasskeySupported } = useAuth();
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (isAuthenticated) {
       router.replace('/');
     }
   }, [isAuthenticated, router]);
+
+  const handlePasskeySuccess = useCallback(() => {
+    router.replace('/');
+  }, [router]);
+
+  const handlePasskeyError = useCallback((err: Error) => {
+    setError(err.message);
+  }, []);
 
   return (
     <Box
@@ -44,7 +59,25 @@ export default function LoginPage() {
         <Typography variant="body1" color="text.secondary" textAlign="center">
           {t('auth.login.description')}
         </Typography>
+
+        {error && (
+          <Alert severity="error" onClose={() => setError(null)}>
+            {error}
+          </Alert>
+        )}
+
         <GoogleLoginButton />
+
+        {isPasskeySupported && (
+          <>
+            <Divider sx={{ width: '100%' }}>OR</Divider>
+            <PasskeyLoginButton
+              onLogin={loginWithPasskey}
+              onSuccess={handlePasskeySuccess}
+              onError={handlePasskeyError}
+            />
+          </>
+        )}
       </Paper>
     </Box>
   );

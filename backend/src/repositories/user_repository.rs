@@ -34,6 +34,21 @@ impl UserRepository {
         Ok(user)
     }
 
+    pub async fn find_by_email(
+        pool: &SqlitePool,
+        email: &str,
+    ) -> Result<Option<User>, AppError> {
+        let user = sqlx::query_as::<_, User>(
+            "SELECT id, email, name, avatar_url, google_id, created_at, updated_at
+             FROM users WHERE email = ?",
+        )
+        .bind(email)
+        .fetch_optional(pool)
+        .await?;
+
+        Ok(user)
+    }
+
     pub async fn create(pool: &SqlitePool, data: CreateUser) -> Result<User, AppError> {
         let id = Uuid::new_v4().to_string();
         let now = chrono::Utc::now().to_rfc3339();

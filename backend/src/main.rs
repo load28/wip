@@ -10,6 +10,7 @@ use task_management_backend::db::create_pool;
 use task_management_backend::graphql::{
     create_schema, AccessTokenData, AppSchema, RefreshTokenData,
 };
+use task_management_backend::routes::passkey_routes;
 
 async fn graphql_handler(
     schema: web::Data<AppSchema>,
@@ -83,6 +84,7 @@ async fn main() -> std::io::Result<()> {
             .app_data(web::Data::new(pool.clone()))
             .app_data(web::Data::new(schema.clone()))
             .wrap(cors)
+            .configure(passkey_routes)
             .route("/health", web::get().to(|| async { "OK" }))
             .service(
                 web::resource("/graphql")

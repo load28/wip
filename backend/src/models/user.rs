@@ -7,7 +7,7 @@ pub struct User {
     pub email: String,
     pub name: String,
     pub avatar_url: Option<String>,
-    pub google_id: String,
+    pub google_id: Option<String>,
     pub created_at: String,
     pub updated_at: String,
 }
@@ -17,5 +17,5 @@ pub struct CreateUser {
     pub email: String,
     pub name: String,
     pub avatar_url: Option<String>,
-    pub google_id: String,
+    pub google_id: Option<String>,
 }

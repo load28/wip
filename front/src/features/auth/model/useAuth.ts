@@ -16,6 +16,11 @@ import {
   REFRESH_TOKEN,
   GET_ME,
 } from '../api/auth.graphql';
+import {
+  authenticateWithPasskey,
+  registerPasskey,
+  isPasskeySupported,
+} from '@/shared/lib/passkey';
 
 interface LoginPayload {
   loginWithGoogle: {
@@ -41,7 +46,7 @@ export function useAuth() {
         {
           code,
           redirectUri,
-        }
+        },
       );
 
       setUser(data.loginWithGoogle.user);
@@ -50,8 +55,22 @@ export function useAuth() {
 
       return data.loginWithGoogle.user;
     },
-    [setUser, setCsrfToken]
+    [setUser, setCsrfToken],
   );
+
+  const loginWithPasskey = useCallback(async () => {
+    const result = await authenticateWithPasskey();
+
+    setUser(result.user);
+    setCsrfToken(result.csrfToken);
+    setCSRFToken(result.csrfToken);
+
+    return result.user;
+  }, [setUser, setCsrfToken]);
+
+  const addPasskey = useCallback(async () => {
+    await registerPasskey();
+  }, []);
 
   const logout = useCallback(async () => {
     await graphqlClient.request(LOGOUT);
@@ -87,6 +106,9 @@ export function useAuth() {
     isAuthenticated,
     csrfToken,
     loginWithGoogle,
+    loginWithPasskey,
+    addPasskey,
+    isPasskeySupported: isPasskeySupported(),
     logout,
     refreshToken,
     fetchCurrentUser,
