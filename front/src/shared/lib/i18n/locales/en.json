@@ -14,10 +14,23 @@
       "title": "Login",
       "description": "Please log in to continue",
       "button": "Login with Google",
+      "passkey": "Login with Passkey",
+      "or": "or",
       "error": "Login failed"
     },
     "logout": {
       "button": "Logout"
+    },
+    "passkey": {
+      "register": "Register Passkey",
+      "registerTitle": "Register New Passkey",
+      "name": "Passkey Name",
+      "registerSuccess": "Passkey registered successfully",
+      "registerError": "Failed to register passkey",
+      "loginError": "Passkey login failed",
+      "delete": "Delete Passkey",
+      "deleteConfirm": "Are you sure you want to delete this passkey?",
+      "empty": "No passkeys registered"
     }
   },
   "project": {

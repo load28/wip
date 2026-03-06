@@ -14,10 +14,23 @@
       "title": "로그인",
       "description": "계속하려면 로그인하세요",
       "button": "Google로 로그인",
+      "passkey": "패스키로 로그인",
+      "or": "또는",
       "error": "로그인에 실패했습니다"
     },
     "logout": {
       "button": "로그아웃"
+    },
+    "passkey": {
+      "register": "패스키 등록",
+      "registerTitle": "새 패스키 등록",
+      "name": "패스키 이름",
+      "registerSuccess": "패스키가 등록되었습니다",
+      "registerError": "패스키 등록에 실패했습니다",
+      "loginError": "패스키 로그인에 실패했습니다",
+      "delete": "패스키 삭제",
+      "deleteConfirm": "이 패스키를 삭제하시겠습니까?",
+      "empty": "등록된 패스키가 없습니다"
     }
   },
   "project": {

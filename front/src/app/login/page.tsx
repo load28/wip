@@ -6,7 +6,12 @@ import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import { useTranslation } from 'react-i18next';
-import { useAuth, GoogleLoginButton } from '@/features/auth';
+import Divider from '@mui/material/Divider';
+import {
+  useAuth,
+  GoogleLoginButton,
+  PasskeyLoginButton,
+} from '@/features/auth';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -18,6 +23,10 @@ export default function LoginPage() {
       router.replace('/');
     }
   }, [isAuthenticated, router]);
+
+  const handlePasskeySuccess = () => {
+    router.replace('/');
+  };
 
   return (
     <Box
@@ -45,6 +54,8 @@ export default function LoginPage() {
           {t('auth.login.description')}
         </Typography>
         <GoogleLoginButton />
+        <Divider sx={{ width: '100%' }}>{t('auth.login.or')}</Divider>
+        <PasskeyLoginButton onSuccess={handlePasskeySuccess} />
       </Paper>
     </Box>
   );

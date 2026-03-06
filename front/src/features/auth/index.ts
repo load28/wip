@@ -1,3 +1,9 @@
 export { useAuth } from './model/useAuth';
-export { GoogleLoginButton, AuthGuard } from './ui';
+export { usePasskey } from './model/usePasskey';
+export {
+  GoogleLoginButton,
+  PasskeyLoginButton,
+  PasskeyRegisterButton,
+  AuthGuard,
+} from './ui';
 export * from './api/auth.graphql';
