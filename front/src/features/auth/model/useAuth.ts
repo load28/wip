@@ -16,6 +16,7 @@ import {
   REFRESH_TOKEN,
   GET_ME,
 } from '../api/auth.graphql';
+import { authenticateWithPasskey } from '../api/webauthn';
 
 interface LoginPayload {
   loginWithGoogle: {
@@ -82,11 +83,25 @@ export function useAuth() {
     }
   }, [setUser]);
 
+  const loginWithPasskey = useCallback(async () => {
+    const result = await authenticateWithPasskey();
+    const loginUser: User = {
+      id: result.userId,
+      email: result.email,
+      name: result.name,
+    };
+    setUser(loginUser);
+    setCsrfToken(result.csrfToken);
+    setCSRFToken(result.csrfToken);
+    return loginUser;
+  }, [setUser, setCsrfToken]);
+
   return {
     user,
     isAuthenticated,
     csrfToken,
     loginWithGoogle,
+    loginWithPasskey,
     logout,
     refreshToken,
     fetchCurrentUser,

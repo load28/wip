@@ -33,8 +33,8 @@ const createTaskSchema = z.object({
     .string()
     .max(1000, 'task.form.descriptionMaxLength')
     .optional(),
-  priority: z.enum(['LOW', 'MEDIUM', 'HIGH']).default('MEDIUM'),
-  status: z.enum(['TODO', 'IN_PROGRESS', 'DONE']).default('TODO'),
+  priority: z.enum(['LOW', 'MEDIUM', 'HIGH']),
+  status: z.enum(['TODO', 'IN_PROGRESS', 'DONE']),
 });
 
 type FormData = z.infer<typeof createTaskSchema>;

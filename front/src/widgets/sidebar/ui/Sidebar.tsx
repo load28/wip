@@ -47,7 +47,7 @@ export function Sidebar() {
   const [isOpen] = useAtom(sidebarOpenAtom);
   const [width] = useAtom(sidebarWidthAtom);
   const toggle = useSetAtom(toggleSidebarAtom);
-  const { currentUser, logout } = useAuth();
+  const { user, logout } = useAuth();
 
   const currentWidth = isOpen ? width : COLLAPSED_WIDTH;
 
@@ -126,11 +126,11 @@ export function Sidebar() {
 
       <Divider />
 
-      {currentUser && (
+      {user && (
         <Box sx={{ p: 2 }}>
           {isOpen && (
             <Typography variant="body2" color="text.secondary" noWrap>
-              {currentUser.name || currentUser.email}
+              {user.name || user.email}
             </Typography>
           )}
           <ListItemButton

@@ -33,3 +33,20 @@ impl AppError {
         Self::BadRequest(msg.into())
     }
 }
+
+impl actix_web::ResponseError for AppError {
+    fn error_response(&self) -> actix_web::HttpResponse {
+        use actix_web::HttpResponse;
+
+        let status = match self {
+            AppError::Unauthorized(_) => actix_web::http::StatusCode::UNAUTHORIZED,
+            AppError::BadRequest(_) => actix_web::http::StatusCode::BAD_REQUEST,
+            AppError::NotFound => actix_web::http::StatusCode::NOT_FOUND,
+            _ => actix_web::http::StatusCode::INTERNAL_SERVER_ERROR,
+        };
+
+        HttpResponse::build(status).json(serde_json::json!({
+            "error": self.to_string()
+        }))
+    }
+}

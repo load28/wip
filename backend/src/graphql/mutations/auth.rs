@@ -64,7 +64,7 @@ impl AuthMutation {
                         email: google_user.email,
                         name: google_user.name,
                         avatar_url: google_user.picture,
-                        google_id: google_user.id,
+                        google_id: Some(google_user.id),
                     },
                 )
                 .await

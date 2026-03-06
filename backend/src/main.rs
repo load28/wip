@@ -10,6 +10,8 @@ use task_management_backend::db::create_pool;
 use task_management_backend::graphql::{
     create_schema, AccessTokenData, AppSchema, RefreshTokenData,
 };
+use task_management_backend::routes::webauthn;
+use task_management_backend::services::WebAuthnService;
 
 async fn graphql_handler(
     schema: web::Data<AppSchema>,
@@ -69,6 +71,9 @@ async fn main() -> std::io::Result<()> {
     // GraphQL 스키마 생성
     let schema = create_schema();
 
+    // WebAuthn 서비스 생성
+    let webauthn_service = web::Data::new(WebAuthnService::new(&config));
+
     tracing::info!("Starting server at http://127.0.0.1:8080");
 
     HttpServer::new(move || {
@@ -78,11 +83,15 @@ async fn main() -> std::io::Result<()> {
             .allow_any_header()
             .supports_credentials();
 
+        let webauthn_service = webauthn_service.clone();
+
         App::new()
             .app_data(web::Data::new(config.clone()))
             .app_data(web::Data::new(pool.clone()))
             .app_data(web::Data::new(schema.clone()))
+            .app_data(webauthn_service)
             .wrap(cors)
+            .configure(webauthn::configure)
             .route("/health", web::get().to(|| async { "OK" }))
             .service(
                 web::resource("/graphql")

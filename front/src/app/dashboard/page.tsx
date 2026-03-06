@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import Grid from '@mui/material/Grid';
+import Grid from '@mui/material/Grid2';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import FolderIcon from '@mui/icons-material/Folder';
@@ -53,7 +53,7 @@ function StatCard({ title, value, icon, color }: StatCardProps) {
 
 export default function DashboardPage() {
   const { t } = useTranslation();
-  const { currentUser } = useAuth();
+  const { user } = useAuth();
   const { projects, fetchProjects } = useProjects();
 
   useEffect(() => {
@@ -71,7 +71,7 @@ export default function DashboardPage() {
       <Box mb={4}>
         <Typography variant="h4" fontWeight="bold">
           {t('dashboard.header.welcome')}
-          {currentUser?.name && `, ${currentUser.name}`}
+          {user?.name && `, ${user.name}`}
         </Typography>
         <Typography color="text.secondary">
           {t('dashboard.header.description')}
