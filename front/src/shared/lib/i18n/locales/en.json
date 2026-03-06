@@ -14,7 +14,9 @@
       "title": "Login",
       "description": "Please log in to continue",
       "button": "Login with Google",
-      "error": "Login failed"
+      "error": "Login failed",
+      "or": "or",
+      "passkey": "Login with Passkey"
     },
     "logout": {
       "button": "Logout"
@@ -86,6 +88,18 @@
   "settings": {
     "title": "Settings",
     "language": "Language",
-    "theme": "Theme"
+    "theme": "Theme",
+    "passkey": {
+      "manage": "Manage Passkeys",
+      "register": "Register Passkey",
+      "empty": "No passkeys registered.",
+      "registerTitle": "Register New Passkey",
+      "nameLabel": "Passkey Name (optional)",
+      "namePlaceholder": "e.g., MacBook Pro, iPhone",
+      "registerError": "Passkey registration failed",
+      "registerButton": "Register",
+      "registered": "Registered: {{date}}",
+      "lastUsed": " · Last used: {{date}}"
+    }
   }
 }

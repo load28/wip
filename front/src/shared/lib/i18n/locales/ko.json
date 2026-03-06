@@ -14,7 +14,9 @@
       "title": "로그인",
       "description": "계속하려면 로그인하세요",
       "button": "Google로 로그인",
-      "error": "로그인에 실패했습니다"
+      "error": "로그인에 실패했습니다",
+      "or": "또는",
+      "passkey": "패스키로 로그인"
     },
     "logout": {
       "button": "로그아웃"
@@ -86,6 +88,18 @@
   "settings": {
     "title": "설정",
     "language": "언어",
-    "theme": "테마"
+    "theme": "테마",
+    "passkey": {
+      "manage": "패스키 관리",
+      "register": "패스키 등록",
+      "empty": "등록된 패스키가 없습니다.",
+      "registerTitle": "새 패스키 등록",
+      "nameLabel": "패스키 이름 (선택)",
+      "namePlaceholder": "예: MacBook Pro, iPhone",
+      "registerError": "패스키 등록 실패",
+      "registerButton": "등록",
+      "registered": "등록: {{date}}",
+      "lastUsed": " · 마지막 사용: {{date}}"
+    }
   }
 }

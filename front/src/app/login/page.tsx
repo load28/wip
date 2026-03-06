@@ -108,7 +108,7 @@ export default function LoginPage() {
 
         {passkeySupported && (
           <>
-            <Divider sx={{ width: '100%' }}>또는</Divider>
+            <Divider sx={{ width: '100%' }}>{t('auth.login.or')}</Divider>
             <Button
               variant="outlined"
               onClick={handlePasskeyLogin}
@@ -116,7 +116,7 @@ export default function LoginPage() {
               sx={{ textTransform: 'none', fontWeight: 500 }}
               fullWidth
             >
-              패스키로 로그인
+              {t('auth.login.passkey')}
             </Button>
           </>
         )}

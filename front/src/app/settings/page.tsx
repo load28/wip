@@ -77,7 +77,9 @@ export default function SettingsPage() {
       setNewPasskeyName('');
       await loadPasskeys();
     } catch (e) {
-      setPasskeyError(e instanceof Error ? e.message : '패스키 등록 실패');
+      setPasskeyError(
+        e instanceof Error ? e.message : t('settings.passkey.registerError')
+      );
     }
   };
 
@@ -155,20 +157,20 @@ export default function SettingsPage() {
               mb={2}
             >
               <Typography variant="subtitle1" fontWeight="medium">
-                패스키 관리
+                {t('settings.passkey.manage')}
               </Typography>
               <Button
                 size="small"
                 startIcon={<AddIcon />}
                 onClick={() => setRegisterDialogOpen(true)}
               >
-                패스키 등록
+                {t('settings.passkey.register')}
               </Button>
             </Box>
 
             {passkeys.length === 0 ? (
               <Typography variant="body2" color="text.secondary">
-                등록된 패스키가 없습니다.
+                {t('settings.passkey.empty')}
               </Typography>
             ) : (
               <List>
@@ -179,9 +181,13 @@ export default function SettingsPage() {
                     </ListItemIcon>
                     <ListItemText
                       primary={pk.name}
-                      secondary={`등록: ${new Date(pk.createdAt).toLocaleDateString()}${
+                      secondary={`${t('settings.passkey.registered', { date: new Date(pk.createdAt).toLocaleDateString() })}${
                         pk.lastUsedAt
-                          ? ` · 마지막 사용: ${new Date(pk.lastUsedAt).toLocaleDateString()}`
+                          ? t('settings.passkey.lastUsed', {
+                              date: new Date(
+                                pk.lastUsedAt
+                              ).toLocaleDateString(),
+                            })
                           : ''
                       }`}
                     />
@@ -203,16 +209,16 @@ export default function SettingsPage() {
             open={registerDialogOpen}
             onClose={() => setRegisterDialogOpen(false)}
           >
-            <DialogTitle>새 패스키 등록</DialogTitle>
+            <DialogTitle>{t('settings.passkey.registerTitle')}</DialogTitle>
             <DialogContent>
               <TextField
                 autoFocus
                 margin="dense"
-                label="패스키 이름 (선택)"
+                label={t('settings.passkey.nameLabel')}
                 fullWidth
                 value={newPasskeyName}
                 onChange={(e) => setNewPasskeyName(e.target.value)}
-                placeholder="예: MacBook Pro, iPhone"
+                placeholder={t('settings.passkey.namePlaceholder')}
               />
               {passkeyError && (
                 <Alert severity="error" sx={{ mt: 1 }}>
@@ -221,9 +227,11 @@ export default function SettingsPage() {
               )}
             </DialogContent>
             <DialogActions>
-              <Button onClick={() => setRegisterDialogOpen(false)}>취소</Button>
+              <Button onClick={() => setRegisterDialogOpen(false)}>
+                {t('common.cancel')}
+              </Button>
               <Button onClick={handleRegisterPasskey} variant="contained">
-                등록
+                {t('settings.passkey.registerButton')}
               </Button>
             </DialogActions>
           </Dialog>
