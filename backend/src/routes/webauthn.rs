@@ -66,7 +66,6 @@ async fn register_begin(
     config: web::Data<Config>,
     pool: web::Data<sqlx::SqlitePool>,
     webauthn_service: web::Data<WebAuthnService>,
-    body: web::Json<RegisterBeginRequest>,
 ) -> Result<HttpResponse, AppError> {
     let user_id = extract_user_id(&req, &config)?;
 
@@ -95,7 +94,7 @@ async fn register_begin(
     // Parse user_id as UUID for webauthn (use a deterministic UUID from the user_id string)
     let user_unique_id = Uuid::new_v5(&Uuid::NAMESPACE_URL, user_id.as_bytes());
 
-    let user_display_name = body.name.as_deref().unwrap_or(&user.name);
+    let user_display_name = &user.name;
 
     let (ccr, reg_state) = webauthn_service
         .webauthn
@@ -104,7 +103,17 @@ async fn register_begin(
 
     webauthn_service.store_registration(&user_id, reg_state);
 
-    Ok(HttpResponse::Ok().json(RegisterBeginResponse { public_key: ccr }))
+    // Patch authenticatorSelection to require resident key for discoverable credentials
+    let mut ccr_json = serde_json::to_value(&RegisterBeginResponse { public_key: ccr })
+        .map_err(|e| AppError::Internal(format!("직렬화 실패: {:?}", e)))?;
+    if let Some(auth_sel) = ccr_json.pointer_mut("/public_key/publicKey/authenticatorSelection") {
+        if let Some(obj) = auth_sel.as_object_mut() {
+            obj.insert("residentKey".to_string(), serde_json::json!("required"));
+            obj.insert("requireResidentKey".to_string(), serde_json::json!(true));
+        }
+    }
+
+    Ok(HttpResponse::Ok().json(ccr_json))
 }
 
 /// POST /api/webauthn/register/finish
@@ -230,9 +239,10 @@ async fn auth_finish(
         .await?
         .ok_or_else(|| AppError::unauthorized("사용자를 찾을 수 없습니다"))?;
 
-    // Create JWT tokens
+    // Create JWT tokens and CSRF token
     let access_token = TokenService::create_access_token(&config, &user.id, &user.email)?;
     let refresh_token = TokenService::create_refresh_token(&pool, &user.id).await?;
+    let csrf_token = TokenService::create_csrf_token(&pool, &user.id).await?;
 
     Ok(HttpResponse::Ok()
         .cookie(
@@ -254,12 +264,11 @@ async fn auth_finish(
                 .finish(),
         )
         .json(serde_json::json!({
-            "user": {
-                "id": user.id,
-                "email": user.email,
-                "name": user.name,
-                "avatar_url": user.avatar_url,
-            }
+            "userId": user.id,
+            "email": user.email,
+            "name": user.name,
+            "avatarUrl": user.avatar_url,
+            "csrfToken": csrf_token,
         })))
 }
 

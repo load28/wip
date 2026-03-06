@@ -92,10 +92,13 @@ export async function registerPasskey(name?: string): Promise<void> {
   });
   if (!beginRes.ok) throw new Error('패스키 등록 시작 실패');
 
-  const creationOptions = await beginRes.json();
+  const beginData = await beginRes.json();
+  // webauthn-rs returns { public_key: { publicKey: { ... } } }
+  const publicKeyOptions =
+    beginData.public_key?.publicKey ?? beginData.publicKey;
 
   const credential = (await navigator.credentials.create({
-    publicKey: prepareCreationOptions(creationOptions.publicKey),
+    publicKey: prepareCreationOptions(publicKeyOptions),
   })) as PublicKeyCredential;
 
   if (!credential) throw new Error('패스키 생성이 취소되었습니다');
@@ -124,10 +127,14 @@ export async function authenticateWithPasskey(): Promise<{
   });
   if (!beginRes.ok) throw new Error('패스키 인증 시작 실패');
 
-  const { challenge, session_id: sessionId } = await beginRes.json();
+  const beginData = await beginRes.json();
+  const sessionId = beginData.session_id;
+  // webauthn-rs returns { public_key: { publicKey: { ... } } }
+  const publicKeyOptions =
+    beginData.public_key?.publicKey ?? beginData.publicKey;
 
   const credential = (await navigator.credentials.get({
-    publicKey: prepareRequestOptions(challenge.publicKey),
+    publicKey: prepareRequestOptions(publicKeyOptions),
   })) as PublicKeyCredential;
 
   if (!credential) throw new Error('패스키 인증이 취소되었습니다');
@@ -160,11 +167,14 @@ export async function authenticateWithConditionalUI(
   });
   if (!beginRes.ok) return null;
 
-  const { challenge, session_id: sessionId } = await beginRes.json();
+  const beginData = await beginRes.json();
+  const sessionId = beginData.session_id;
+  const publicKeyOptions =
+    beginData.public_key?.publicKey ?? beginData.publicKey;
 
   try {
     const credential = (await navigator.credentials.get({
-      publicKey: prepareRequestOptions(challenge.publicKey),
+      publicKey: prepareRequestOptions(publicKeyOptions),
       mediation: 'conditional' as CredentialMediationRequirement,
       signal: abortController.signal,
     })) as PublicKeyCredential;
